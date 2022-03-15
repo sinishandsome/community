@@ -1,9 +1,12 @@
 package com.wcx.community;
 
 import com.wcx.community.dao.DiscussPostMapper;
+import com.wcx.community.dao.LoginTicketMapper;
 import com.wcx.community.dao.UserMapper;
 import com.wcx.community.entity.DiscussPost;
+import com.wcx.community.entity.LoginTicket;
 import com.wcx.community.entity.User;
+import com.wcx.community.util.CommunityUtil;
 import org.junit.Test;
 
 import org.junit.runner.RunWith;
@@ -25,6 +28,9 @@ public class MapperTests {
 
     @Autowired
     private DiscussPostMapper discussPostMapper;
+
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
 
     @Test
     public void testSelectUser() {
@@ -74,5 +80,31 @@ public class MapperTests {
         int rows = discussPostMapper.selectDiscussPostRows(0);
         System.out.println(rows);
     }
+
+    @Test
+    public void testInsertLoginTicket() {
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(101);
+        loginTicket.setTicket("abc");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+        loginTicketMapper.insertLoginTicket(loginTicket);
+    }
+
+    @Test
+    public void testSelectLoginTicket() {
+        LoginTicket loginTicket = loginTicketMapper.selectByTicket("abc");
+        System.out.println(loginTicket);
+        loginTicketMapper.updateStatus("abc", 1);
+        loginTicket = loginTicketMapper.selectByTicket("abc");
+        System.out.println(loginTicket);
+    }
+
+    @Test
+    public void testPassword() {
+        String s = CommunityUtil.md5("rhgusuthmv" + "94549");
+        System.out.println(s);
+    }
+
 
 }
