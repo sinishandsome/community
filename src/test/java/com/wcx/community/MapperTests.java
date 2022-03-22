@@ -2,13 +2,13 @@ package com.wcx.community;
 
 import com.wcx.community.dao.DiscussPostMapper;
 import com.wcx.community.dao.LoginTicketMapper;
+import com.wcx.community.dao.MessageMapper;
 import com.wcx.community.dao.UserMapper;
 import com.wcx.community.entity.DiscussPost;
 import com.wcx.community.entity.LoginTicket;
+import com.wcx.community.entity.Message;
 import com.wcx.community.entity.User;
-import com.wcx.community.util.CommunityUtil;
 import org.junit.Test;
-
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +31,9 @@ public class MapperTests {
 
     @Autowired
     private LoginTicketMapper loginTicketMapper;
+
+    @Autowired
+    private MessageMapper messageMapper;
 
     @Test
     public void testSelectUser() {
@@ -73,11 +76,12 @@ public class MapperTests {
 
     @Test
     public void testSelectPosts() {
-        List<DiscussPost> list = discussPostMapper.selectDiscussPosts(0, 0, 10);
-        for(DiscussPost post : list) {
+        List<DiscussPost> list = discussPostMapper.selectDiscussPosts(149, 0, 10);
+        for (DiscussPost post : list) {
             System.out.println(post);
         }
-        int rows = discussPostMapper.selectDiscussPostRows(0);
+
+        int rows = discussPostMapper.selectDiscussPostRows(149);
         System.out.println(rows);
     }
 
@@ -88,6 +92,7 @@ public class MapperTests {
         loginTicket.setTicket("abc");
         loginTicket.setStatus(0);
         loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+
         loginTicketMapper.insertLoginTicket(loginTicket);
     }
 
@@ -95,16 +100,33 @@ public class MapperTests {
     public void testSelectLoginTicket() {
         LoginTicket loginTicket = loginTicketMapper.selectByTicket("abc");
         System.out.println(loginTicket);
+
         loginTicketMapper.updateStatus("abc", 1);
         loginTicket = loginTicketMapper.selectByTicket("abc");
         System.out.println(loginTicket);
     }
 
     @Test
-    public void testPassword() {
-        String s = CommunityUtil.md5("rhgusuthmv" + "94549");
-        System.out.println(s);
-    }
+    public void testSelectLetters() {
+        List<Message> list = messageMapper.selectConversations(111, 0, 20);
+        for (Message message : list) {
+            System.out.println(message);
+        }
 
+        int count = messageMapper.selectConversationCount(111);
+        System.out.println(count);
+
+        list = messageMapper.selectLetters("111_112", 0, 10);
+        for (Message message : list) {
+            System.out.println(message);
+        }
+
+        count = messageMapper.selectLetterCount("111_112");
+        System.out.println(count);
+
+        count = messageMapper.selectLetterUnreadCount(131, "111_131");
+        System.out.println(count);
+
+    }
 
 }
